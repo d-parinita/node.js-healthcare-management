@@ -57,7 +57,8 @@ exports.signin = (req, res) => {
     const {email, password} = req.body
     const payload = {
         email: email,
-        password: password
+        password: password,
+        userType: null
     }
     if (!email || !password) {
         return res.status(400).json({
@@ -72,6 +73,7 @@ exports.signin = (req, res) => {
                 error: 'User does not exists'
             })
         }
+        payload.userType = user.userType
         bcrypt.compare(password, user.password).then((isCorrect) => {
             if (isCorrect) {
                 jwt.sign(payload, process.env.SECRET, {expiresIn: 3600}, 
