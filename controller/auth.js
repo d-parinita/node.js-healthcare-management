@@ -7,7 +7,8 @@ exports.signup = (req, res) => {
     const payload = {
         email: email,
         password: password,
-        userType: userType
+        userType: userType,
+        id: null
     }
     if (!email || !password) {
         return res.status(400).json({
@@ -30,6 +31,7 @@ exports.signup = (req, res) => {
                 }
                 authData.password = hash
                 authData.save().then((data) => {
+                    payload.id = data._id
                     jwt.sign(payload, process.env.SECRET, {expiresIn: 3600},
                         (error, token) => {
                             if (error) {
@@ -58,7 +60,8 @@ exports.signin = (req, res) => {
     const payload = {
         email: email,
         password: password,
-        userType: null
+        userType: null,
+        id: null
     }
     if (!email || !password) {
         return res.status(400).json({
@@ -73,6 +76,7 @@ exports.signin = (req, res) => {
                 error: 'User does not exists'
             })
         }
+        payload.id = user._id
         payload.userType = user.userType
         bcrypt.compare(password, user.password).then((isCorrect) => {
             if (isCorrect) {

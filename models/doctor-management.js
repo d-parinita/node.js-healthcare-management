@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { ObjectId } = mongoose.Schema
 
 const doctorProfile = mongoose.Schema({
     name: {
@@ -22,6 +23,10 @@ const doctorProfile = mongoose.Schema({
     },
     profilePic: {
         type: String
+    },
+    userId: {
+        type: ObjectId,
+        ref: 'Auth'
     }
 })
 

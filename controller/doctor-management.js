@@ -14,11 +14,11 @@ exports.addDoctorProfile = (req, res) => {
         speciality: speciality,
         contactInfo: contactInfo,
         availableTime: availableTime,
-        profilePic: profilePic
+        profilePic: profilePic,
+        userId: req.auth.id
     }
     const doctorProfile = new DoctorProfile(payload)
     doctorProfile.save().then((data) => {
-        console.log(data);
         return res.status(200).json({
             msg:'success'
         })
@@ -29,10 +29,55 @@ exports.addDoctorProfile = (req, res) => {
     })
 }
 
+exports.getDoctorById = (req, res) => {
+    const id = req.auth.id    
+    if (!id) {
+        return res.status(502).json({
+            error: "Doctor id is required",
+        })
+    }
+    DoctorProfile.findOne({userId: id}).then((doctor) => {
+        if (!doctor) {
+            return res.status(400).json({
+                error: "Doctor doesn't exist",
+            })
+        }
+        return res.status(200).json({
+            data: doctor,
+        })
+    }).catch((error) => {
+        return res.status(502).json({
+            error: "Unknown error occoured",
+        })
+    })
+}
+
 exports.editDoctorProfile = (req, res) => {
-    
+    const updatedData = req.body;
+    const doctorId = req.auth?.id;
+
+    DoctorProfile.updateOne({ userId: doctorId }, { $set: updatedData }).then((doctor) => {
+        return res.status(200).json({
+            data: doctor,
+            message: "Doctor updated",
+        })
+    }).catch((error) => {
+        return res.status(520).json({
+            error: "Unknown error",
+        })
+    })
 }
 
 exports.deleteDoctorProfile = (req, res) => {
-    
+    const doctorId = req.auth?.id;
+    DoctorProfile.findOneAndDelete({ userId: doctorId }).then((doctor) => {
+        return res.status(200).json({
+            data: doctor,
+            message: "Doctor profile has been deleted",
+        })
+    }).catch((error) => {
+        return res.status(200).json({
+            error: "Unknown error",
+        })
+    })
 }

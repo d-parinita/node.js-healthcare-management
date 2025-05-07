@@ -9,9 +9,7 @@ exports.isSignedIn = (req, res, next) => {
             error: 'Unauthorized - Missing JWT' 
         });
     }
-    jwt.verify(token, secret, { algorithms: ["sha1", "RS256", "HS256"] }, (err, decoded) => {
-        console.log(decoded);
-        
+    jwt.verify(token, secret, { algorithms: ["sha1", "RS256", "HS256"] }, (err, decoded) => {        
         if (err) {
           return res.status(401).json({ error: 'Unauthorized - Invalid JWT' });
         }
@@ -30,8 +28,6 @@ exports.isAdmin = (req, res, next) => {
 }
 
 exports.isDoctor = (req, res, next) => {
-    console.log(req.auth.userType);
-    
     if(req.auth.userType != constants.USERTYPE.DOCTOR) {
         return res.status(401).json({
           error: "You are not an doctor ! Access Denied",
