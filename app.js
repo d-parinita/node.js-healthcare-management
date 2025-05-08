@@ -15,6 +15,9 @@ app.use('/api', auth)
 const doctor = require('./routes/doctor-management')
 app.use('/api', doctor)
 
+const patients = require('./routes/patients')
+app.use('/api', patients)
+
 const port = 8000
 
 app.listen(port, () => {

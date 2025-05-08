@@ -81,3 +81,11 @@ exports.deleteDoctorProfile = (req, res) => {
         })
     })
 }
+
+exports.getDoctors = (req, res) => {
+
+}
+
+exports.getAppointments = (req, res) => {
+    
+}
