@@ -26,6 +26,10 @@ const appointments = mongoose.Schema({
         type: ObjectId,
         ref: 'Auth'
     },
+    userId: {
+        type: ObjectId,
+        ref: 'Auth'
+    }
 })
 
 module.exports = mongoose.model('Appointments', appointments)

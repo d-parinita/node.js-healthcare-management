@@ -14,7 +14,8 @@ exports.bookAppointment = (req, res) => {
         age: age,
         slot: slot,
         contactNo: contactNo,
-        doctorId: doctorId
+        doctorId: doctorId,
+        userId: req.auth.id
     }
     const appointment = new Appointments(payload)
     appointment.save().then((data) => {
@@ -29,5 +30,24 @@ exports.bookAppointment = (req, res) => {
 }
 
 exports.getMyAppointment = (req, res) => {
-    
+    const id = req.auth.id    
+    if (!id) {
+        return res.status(502).json({
+            error: "Patient id is required",
+        })
+    }
+    Appointments.find({ userId: id }).then((data) => {
+        if (!data) {
+            return res.status(400).json({
+                error: "Appointments doesn't exist",
+            })
+        }
+        return res.status(200).json({
+            data: data,
+        })
+    }).catch((error) => {
+        return res.status(502).json({
+            error: "Unknown error occoured",
+        })
+    })
 }

@@ -1,4 +1,5 @@
 const DoctorProfile = require("../models/doctor-management")
+const Appointments = require('../models/patients')
 const { validationResult } = require("express-validator");
 
 exports.addDoctorProfile = (req, res) => {
@@ -83,9 +84,41 @@ exports.deleteDoctorProfile = (req, res) => {
 }
 
 exports.getDoctors = (req, res) => {
-
+    DoctorProfile.find({}).then((data) => {
+        if (!data) {
+            return res.status(400).json({
+                error: "Doctors doesn't exist",
+            })
+        }
+        return res.status(200).json({
+            data: data,
+        })
+    }).catch((error) => {
+        return res.status(502).json({
+            error: "Unknown error occoured",
+        })
+    })
 }
 
 exports.getAppointments = (req, res) => {
-    
+    const id = req.auth.id    
+    if (!id) {
+        return res.status(502).json({
+            error: "Doctor id is required",
+        })
+    }
+    Appointments.find({ doctorId: id }).then((data) => {
+        if (!data) {
+            return res.status(400).json({
+                error: "No appointments",
+            })
+        }
+        return res.status(200).json({
+            data: data,
+        })
+    }).catch((error) => {
+        return res.status(502).json({
+            error: "Unknown error occoured",
+        })
+    })
 }
